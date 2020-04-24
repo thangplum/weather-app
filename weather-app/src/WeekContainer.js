@@ -1,5 +1,6 @@
 import React from 'react';
-
+import {Container, Row, Col, Jumbotron} from 'react-bootstrap';
+import DayCard from './Components/DayCard';
 
 class WeekContainer extends React.Component {
   state = {
@@ -8,7 +9,7 @@ class WeekContainer extends React.Component {
   }
   componentDidMount = () => {
     const weatherURL =
-    `http://api.openweathermap.org/data/2.5/forecast?zip=11102&units=imperial&APPID=${process.env.REACT_APP_API_KEY}`
+    `http://api.openweathermap.org/data/2.5/forecast?zip=61401&units=imperial&APPID=${process.env.REACT_APP_API_KEY}`
     fetch(weatherURL)
       .then(res => res.json())
       .then(data => {
@@ -20,11 +21,26 @@ class WeekContainer extends React.Component {
       })
   }
 
+  formatDaycard = () =>{
+    return this.state.dailyData.map((data, index) => <Col><DayCard reading={data} key={index} /></Col>)
+  }
+
   render() {
     return (
-      <div>
-        <h1>Hello World!</h1>
-      </div>
+      <Container>
+        <Jumbotron fluid>
+          <Container>
+            <h4>5-Day Forecast.</h4>
+          </Container> 
+        </Jumbotron>
+        
+        <h5 className="display-5 text-muted">Galesburg, US</h5>
+        
+        <Row>
+          {this.formatDaycard()}
+        </Row>
+      </Container>
+      
     )
   }
 }
