@@ -1,48 +1,79 @@
-import React from 'react';
-import {Container, Row, Col, Jumbotron} from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Container, Row, Col, Jumbotron, Form, Button } from 'react-bootstrap';
+import {useSelector, useDispatch} from "react-redux";
+import {fetchWeather} from "./actions/fetchWeather";
 import DayCard from './Components/DayCard';
 
-class WeekContainer extends React.Component {
-  state = {
-    fullData: [],
-    dailyData: []
-  }
-  componentDidMount = () => {
-    const weatherURL =
-    `http://api.openweathermap.org/data/2.5/forecast?zip=61401&units=imperial&APPID=${process.env.REACT_APP_API_KEY}`
-    fetch(weatherURL)
-      .then(res => res.json())
-      .then(data => {
-        const dailyData = data.list.filter(reading => reading.dt_txt.includes("18:00:00"))
-        this.setState({
-          fullData: data.list,
-          dailyData: dailyData
-        }, () => console.log(this.state))
-      })
+function WeekContainer() {
+  const [city, setCity] = useState("");
+  const [form, renderForm] = useState(false);
+
+  const dispatch = useDispatch()
+  const getWeatherInfo = (city) => dispatch(fetchWeather(city))
+
+
+
+  const weatherInfo = (e) => {
+    e.preventDefault();
+    if (city === "") {
+      console.log("No city");
+    } else {
+      getWeatherInfo(city);
+    }
   }
 
-  formatDaycard = () =>{
-    return this.state.dailyData.map((data, index) => <Col><DayCard reading={data} key={index} /></Col>)
-  }
+  const weather = useSelector(state => state.dailyData);
+  console.log(weather);
+  
+  
+  // const formatDaycard = () =>{
+  //   if (weather) {
+  //     return weather.map((data, index) => <Col><DayCard reading={data} key={index} /></Col>);
+  //   }
+  //   else {
+  //     return <p>You need to type in a city</p>
+  //   }
+  // };
 
-  render() {
+  
     return (
-      <Container>
-        <Jumbotron fluid>
-          <Container>
-            <h4>5-Day Forecast.</h4>
-          </Container> 
-        </Jumbotron>
+      <>
+        <Form onSubmit={weatherInfo}>
+          <Form.Group controlId="cityNameInfo">
+            <Form.Label>Your city</Form.Label>
+            <Form.Control type="text" placeholder="Enter your city's name" onChange={(e) => setCity(e.target.value)} />
+          </Form.Group>
+          <Button variant="primary" type="submit" onClick={() => renderForm(true)}>
+            Submit
+          </Button>
+        </Form>
+        {form 
+        ? <Container>
+          <Jumbotron fluid>
+            <Container>
+              <h4>5-Day Forecast.</h4>
+            </Container> 
+          </Jumbotron>
+          
+          <h5 className="display-5 text-muted">{city.toUpperCase()}</h5>
+          
+          <Row>
+            
+            {weather.map((data, index) => <Col><DayCard reading={data} key={index} /></Col>)}
+            
+          </Row>
+          <Row>
+            <Button variant="primary" type="submit" onClick={() => renderForm(true)}>
+              Back
+            </Button>
+          </Row>
+        </Container>
+        : null
+        }
+        </>
         
-        <h5 className="display-5 text-muted">Galesburg, US</h5>
-        
-        <Row>
-          {this.formatDaycard()}
-        </Row>
-      </Container>
-      
-    )
-  }
-}
+    );
+  } 
+
 
 export default WeekContainer;
