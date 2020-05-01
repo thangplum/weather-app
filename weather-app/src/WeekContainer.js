@@ -10,8 +10,7 @@ function WeekContainer() {
 
   const dispatch = useDispatch()
   const getWeatherInfo = (city) => dispatch(fetchWeather(city))
-
-
+  const weather = useSelector(state => state.dailyData);
 
   const weatherInfo = (e) => {
     e.preventDefault();
@@ -22,33 +21,24 @@ function WeekContainer() {
     }
   }
 
-  const weather = useSelector(state => state.dailyData);
-  console.log(weather);
-  
-  
-  // const formatDaycard = () =>{
-  //   if (weather) {
-  //     return weather.map((data, index) => <Col><DayCard reading={data} key={index} /></Col>);
-  //   }
-  //   else {
-  //     return <p>You need to type in a city</p>
-  //   }
-  // };
-
-  
+  if (!form) {
     return (
-      <>
-        <Form onSubmit={weatherInfo}>
-          <Form.Group controlId="cityNameInfo">
-            <Form.Label>Your city</Form.Label>
-            <Form.Control type="text" placeholder="Enter your city's name" onChange={(e) => setCity(e.target.value)} />
-          </Form.Group>
-          <Button variant="primary" type="submit" onClick={() => renderForm(true)}>
-            Submit
-          </Button>
-        </Form>
-        {form 
-        ? <Container>
+      <Form onSubmit={weatherInfo}>
+        <Form.Group controlId="cityNameInfo" >
+          <Form.Label>Your city</Form.Label>
+          <Form.Control type="text" placeholder="Enter your city's name" onChange={(e) => setCity(e.target.value)} />
+        </Form.Group>
+        <Button type="submit" onClick={() => weather.length ? renderForm(true) : null}>
+          Submit
+        </Button>
+      </Form>
+      
+    );
+  } else {
+    if (weather.length) {
+      console.log(weather);
+      return (
+        <Container>
           <Jumbotron fluid>
             <Container>
               <h4>5-Day Forecast.</h4>
@@ -56,24 +46,28 @@ function WeekContainer() {
           </Jumbotron>
           
           <h5 className="display-5 text-muted">{city.toUpperCase()}</h5>
-          
           <Row>
-            
             {weather.map((data, index) => <Col><DayCard reading={data} key={index} /></Col>)}
-            
           </Row>
           <Row>
-            <Button variant="primary" type="submit" onClick={() => renderForm(true)}>
-              Back
-            </Button>
+            <Col>
+              <Button variant="primary" type="submit" onClick={() => renderForm(false)}>
+                Back
+              </Button>
+            </Col>
+            
           </Row>
+          
         </Container>
-        : null
-        }
-        </>
-        
-    );
-  } 
+      );
+      
+    } else {
+      return (
+        <span>Loading weather...</span>
+      );
+    }
+  }
+} 
 
 
 export default WeekContainer;
