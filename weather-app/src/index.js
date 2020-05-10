@@ -7,13 +7,21 @@ import * as serviceWorker from './serviceWorker';
 //import Provider
 import { Provider } from 'react-redux';
 import store from "./store";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 
 ReactDOM.render(
-  <Provider store={store}>
-    <React.StrictMode>
-        <App />  
-    </React.StrictMode>
-  </Provider>,
+  <Router>
+    <Provider store={store}>
+        <React.StrictMode>
+            <Route component={App} />  
+        </React.StrictMode>
+    </Provider>
+  </Router>,
   document.getElementById('root')
 );
 

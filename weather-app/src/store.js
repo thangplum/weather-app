@@ -1,6 +1,6 @@
 import thunk from 'redux-thunk';
 import logger from "redux-logger";
-import { ApplyMiddleware, createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import reducers from "./reducers/weatherReducer";
 
 //reducers

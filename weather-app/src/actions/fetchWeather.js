@@ -1,5 +1,4 @@
 export function fetchWeather(city) {
-    
     return function(dispatch) {
         const weatherURL =
         `http://api.openweathermap.org/data/2.5/forecast?q=${city}&units=imperial&appid=${process.env.REACT_APP_API_KEY}`
